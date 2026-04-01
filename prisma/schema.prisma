@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 사용자 (관리자 전용)
+model User {
+  id        Int      @id @default(autoincrement())
+  loginId   String   @unique
+  password  String
+  name      String   @default("관리자")
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// 회원 도서관
+model Library {
+  id             Int      @id @default(autoincrement())
+  name           String
+  address        String
+  lat            Float?
+  lng            Float?
+  phone          String?
+  hours          String?
+  closedDays     String?
+  description    String?
+  specialProgram String?
+  imageUrl       String?
+  homepageUrl    String?
+  isActive       Boolean  @default(true)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("libraries")
+}
+
+// 게시글 (공지사항, 활동소식, 보도자료)
+model Post {
+  id          Int          @id @default(autoincrement())
+  title       String
+  content     String
+  excerpt     String?
+  category    String
+  images      String       @default("[]")
+  isPinned    Boolean      @default(false)
+  viewCount   Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  attachments Attachment[]
+
+  @@index([category])
+  @@index([isPinned])
+  @@index([createdAt])
+  @@map("posts")
+}
+
+// 게시글 첨부파일
+model Attachment {
+  id     Int    @id @default(autoincrement())
+  postId Int
+  name   String
+  url    String
+  size   Int
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("attachments")
+}
+
+// 사업/프로그램
+model Program {
+  id             Int       @id @default(autoincrement())
+  title          String
+  description    String?
+  content        String?
+  category       String?
+  status         String    @default("planned")
+  startDate      DateTime?
+  endDate        DateTime?
+  imageUrl       String?
+  location       String?
+  targetAudience String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@map("programs")
+}
+
+// 커뮤니티 게시글 (도란도란)
+model CommunityPost {
+  id         Int      @id @default(autoincrement())
+  title      String
+  content    String
+  category   String
+  authorName String
+  password   String
+  viewCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([category])
+  @@index([createdAt])
+  @@map("community_posts")
+}
+
+// 자료실
+model Resource {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String?
+  category      String
+  fileUrl       String
+  fileName      String
+  fileSize      Int      @default(0)
+  downloadCount Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@map("resources")
+}
+
+// 갤러리 (앨범)
+model Gallery {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  images      GalleryImage[]
+
+  @@index([date])
+  @@map("galleries")
+}
+
+// 갤러리 이미지
+model GalleryImage {
+  id        Int     @id @default(autoincrement())
+  galleryId Int
+  imageUrl  String
+  caption   String?
+  order     Int     @default(0)
+  gallery   Gallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  @@index([galleryId])
+  @@map("gallery_images")
+}
