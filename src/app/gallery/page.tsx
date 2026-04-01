@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import GalleryPageClient from "./GalleryPageClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function GalleryPage() {
   const galleries = await prisma.gallery.findMany({
     orderBy: { date: "desc" },

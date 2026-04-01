@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import NewsPageClient from "./NewsPageClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function NewsPage() {
   const posts = await prisma.post.findMany({
     orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],

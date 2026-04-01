@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import LibrariesPageClient from "./LibrariesPageClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function LibrariesPage() {
   const libraries = await prisma.library.findMany({
     where: { isActive: true },

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import ProgramsPageClient from "./ProgramsPageClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProgramsPage() {
   const programs = await prisma.program.findMany({
     orderBy: { startDate: "desc" },

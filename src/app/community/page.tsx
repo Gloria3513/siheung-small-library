@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import CommunityPageClient from "./CommunityPageClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function CommunityPage() {
   const posts = await prisma.communityPost.findMany({
     orderBy: { createdAt: "desc" },

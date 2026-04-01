@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import ResourcesPageClient from "./ResourcesPageClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function ResourcesPage() {
   const resources = await prisma.resource.findMany({
     orderBy: { createdAt: "desc" },
