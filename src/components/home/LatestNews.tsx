@@ -1,16 +1,13 @@
 import Link from "next/link";
 import { ArrowRight, Pin } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+import { getLatestPosts } from "@/lib/db";
 import { formatDate } from "@/lib/client-utils";
 import { POST_CATEGORIES } from "@/lib/constants";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 
 export default async function LatestNews() {
-  const posts = await prisma.post.findMany({
-    orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
-    take: 3,
-  });
+  const posts = await getLatestPosts(3);
 
   return (
     <section className="py-16 bg-ivory">
@@ -50,7 +47,7 @@ export default async function LatestNews() {
                     {post.excerpt}
                   </p>
                   <div className="flex items-center justify-between text-xs text-warm-gray-500">
-                    <span>{formatDate(post.createdAt.toISOString())}</span>
+                    <span>{formatDate(post.createdAt)}</span>
                     <span>조회 {post.viewCount}</span>
                   </div>
                 </div>

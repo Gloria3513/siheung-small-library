@@ -1,17 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, Calendar } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+import { getActivePrograms } from "@/lib/db";
 import { formatDate } from "@/lib/client-utils";
 import { PROGRAM_STATUS, PROGRAM_STATUS_COLORS } from "@/lib/constants";
-import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 
 export default async function ProgramHighlight() {
-  const programs = await prisma.program.findMany({
-    where: { status: { not: "completed" } },
-    orderBy: { startDate: "asc" },
-    take: 3,
-  });
+  const programs = await getActivePrograms(3);
 
   return (
     <section className="py-16 bg-forest-100/50">
@@ -55,8 +50,8 @@ export default async function ProgramHighlight() {
                     <div className="flex items-center gap-1.5 text-xs text-warm-gray-500">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>
-                        {formatDate(program.startDate.toISOString())}
-                        {program.endDate && ` ~ ${formatDate(program.endDate.toISOString())}`}
+                        {formatDate(program.startDate)}
+                        {program.endDate && ` ~ ${formatDate(program.endDate)}`}
                       </span>
                     </div>
                   )}

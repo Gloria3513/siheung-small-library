@@ -1,14 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, MapPin, Clock } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+import { getFeaturedLibraries } from "@/lib/db";
 import Card from "@/components/ui/Card";
 
 export default async function FeaturedLibraries() {
-  const libraries = await prisma.library.findMany({
-    where: { isActive: true },
-    orderBy: { order: "asc" },
-    take: 4,
-  });
+  const libraries = await getFeaturedLibraries(4);
 
   return (
     <section className="py-16">
